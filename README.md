@@ -1,4 +1,4 @@
-# Horde Run Tracker
+# PokeSurvivor Run Tracker
 
 Browser extension for [PokeSurvivor](https://pokesurvivor.com) that tracks every run: stat cards picked at each level-up, moves learned, gacha tickets collected, duration and ticket rate.
 
@@ -17,7 +17,7 @@ Ticket value counts a ×10 ticket as 10 tickets.
 ## Install (development)
 
 - **Chrome / Edge**: `chrome://extensions` → enable Developer mode → *Load unpacked* → select this folder.
-- **Firefox (121+)**: `manifest.json` is Chrome's (Firefox doesn't run MV3 service workers). Run `npm run package`, then `about:debugging#/runtime/this-firefox` → *Load Temporary Add-on* → select `dist/horde-run-tracker-<version>-firefox.zip`. In Firefox, site access is opt-in: allow the extension on pokesurvivor.com from the toolbar menu.
+- **Firefox (121+)**: `manifest.json` is Chrome's (Firefox doesn't run MV3 service workers). Run `npm run package`, then `about:debugging#/runtime/this-firefox` → *Load Temporary Add-on* → select `dist/pokesurvivor-run-tracker-<version>-firefox.zip`. In Firefox, site access is opt-in: allow the extension on pokesurvivor.com from the toolbar menu.
 
 ## Development
 
@@ -25,7 +25,7 @@ Requires Node 22+, no dependencies.
 
 ```sh
 npm test         # unit tests for the shared logic (stats.js) and the translations
-npm run package  # builds dist/horde-run-tracker-<version>-{chrome,firefox}.zip for the stores
+npm run package  # builds dist/pokesurvivor-run-tracker-<version>-{chrome,firefox}.zip for the stores
 ```
 
 | File | Role |

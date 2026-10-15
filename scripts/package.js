@@ -1,4 +1,4 @@
-// Builds dist/horde-run-tracker-<version>-{chrome,firefox}.zip for the Chrome Web Store and Firefox Add-ons.
+// Builds dist/pokesurvivor-run-tracker-<version>-{chrome,firefox}.zip for the Chrome Web Store and Firefox Add-ons.
 // No dependencies: writes a standard zip with Node's zlib.
 const fs = require('fs');
 const path = require('path');
@@ -58,7 +58,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.json'), 'u
 const firefoxManifest = {
   ...manifest,
   background: { scripts: ['stats.js', 'background.js'] },
-  browser_specific_settings: { gecko: { id: 'horde-run-tracker@pokesurvivor-extension', strict_min_version: '121.0' } },
+  browser_specific_settings: { gecko: { id: 'pokesurvivor-run-tracker@extension', strict_min_version: '121.0' } },
 };
 
 const files = FILES.flatMap(list).sort().map((name) => ({ name, data: fs.readFileSync(path.join(ROOT, name)) }));
@@ -69,7 +69,7 @@ const builds = {
 
 fs.mkdirSync(path.join(ROOT, 'dist'), { recursive: true });
 for (const [browser, entries] of Object.entries(builds)) {
-  const out = path.join(ROOT, 'dist', `horde-run-tracker-${manifest.version}-${browser}.zip`);
+  const out = path.join(ROOT, 'dist', `pokesurvivor-run-tracker-${manifest.version}-${browser}.zip`);
   fs.writeFileSync(out, zip(entries));
   console.log(`${path.relative(ROOT, out)} (${entries.length} files)`);
 }

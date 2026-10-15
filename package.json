@@ -1,5 +1,5 @@
 {
-  "name": "horde-run-tracker",
+  "name": "pokesurvivor-run-tracker",
   "private": true,
   "description": "Browser extension that tracks PokeSurvivor runs.",
   "scripts": {

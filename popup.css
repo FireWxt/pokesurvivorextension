@@ -18,8 +18,9 @@ body {
 body.tab { width: auto; max-width: 720px; max-height: none; margin: 0 auto; padding: 20px 16px; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 h1 { margin: 0 0 8px; font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-h1 img { width: 24px; height: 24px; image-rendering: pixelated; }
-h1 span { color: var(--text); font-weight: 400; }
+h1 img { width: 32px; height: 32px; image-rendering: pixelated; }
+.brand { display: flex; flex-direction: column; line-height: 1.1; }
+.brand small { color: var(--text); font-size: 11px; font-weight: 400; letter-spacing: .04em; }
 h2 { margin: 14px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .sec-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .actions, .data-actions { display: flex; flex-wrap: wrap; gap: 6px; }

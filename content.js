@@ -318,6 +318,7 @@
         display: flex; align-items: center; gap: 6px; padding: 6px 8px; cursor: move;
         border-bottom: 1px solid rgba(244, 248, 255, .15);
       }
+      .logo { width: 1.4em; height: 1.4em; flex: none; image-rendering: pixelated; }
       .title { flex: 1; font-weight: 700; color: #ffd23f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .sub { color: #9fb1c9; font-weight: 400; }
       button {
@@ -367,6 +368,7 @@
     </style>
     <div class="panel">
       <div class="head">
+        <img class="logo" alt="">
         <div class="title"></div>
         <button class="hist"></button>
         <button class="collapse"></button>
@@ -382,6 +384,7 @@
   const collapseBtn = root.querySelector('.collapse');
   const histBtn = root.querySelector('.hist');
   const closeBtn = root.querySelector('.close');
+  root.querySelector('.logo').src = chrome.runtime.getURL('icons/icon32.png');
   histBtn.textContent = '☰';
   histBtn.title = t('runHistory');
   closeBtn.title = t('hide');

@@ -236,11 +236,11 @@ $('clear').addEventListener('click', () => {
 });
 
 $('export-json').addEventListener('click', () => {
-  download(`horde-runs-${stamp()}.json`, 'application/json', JSON.stringify({ version: 1, exportedAt: Date.now(), history: state.history || [] }, null, 2));
+  download(`pokesurvivor-runs-${stamp()}.json`, 'application/json', JSON.stringify({ version: 1, exportedAt: Date.now(), history: state.history || [] }, null, 2));
 });
 
 $('export-csv').addEventListener('click', () => {
-  download(`horde-runs-${stamp()}.csv`, 'text/csv', '﻿' + PST.toCSV(state.history || []));
+  download(`pokesurvivor-runs-${stamp()}.csv`, 'text/csv', '﻿' + PST.toCSV(state.history || []));
 });
 
 $('import').addEventListener('click', () => {

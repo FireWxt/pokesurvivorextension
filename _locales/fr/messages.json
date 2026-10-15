@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Horde Run Tracker"
+    "message": "PokeSurvivor Run Tracker"
   },
   "extDesc": {
     "message": "Suit les améliorations de stats et les tickets gacha récoltés à chaque run de PokeSurvivor (pokesurvivor.com)."
@@ -186,7 +186,7 @@
     "message": "$1 / $2 de valeur en tickets récoltée aujourd’hui."
   },
   "badgeTitle": {
-    "message": "Horde Run Tracker · Niv. $1 · Tickets $2 · ×10 $3"
+    "message": "PokeSurvivor Run Tracker · Niv. $1 · Tickets $2 · ×10 $3"
   },
   "openInTab": {
     "message": "Ouvrir dans un onglet"
@@ -318,7 +318,7 @@
     "message": "Effacer l’historique"
   },
   "importInvalid": {
-    "message": "Ce fichier n’est pas un export de Horde Run Tracker."
+    "message": "Ce fichier n’est pas un export de PokeSurvivor Run Tracker."
   },
   "importDone": {
     "message": "$1 runs importées, $2 déjà présentes."
