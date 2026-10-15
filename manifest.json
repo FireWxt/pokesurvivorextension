@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Horde Run Tracker",
+  "version": "1.1.0",
+  "description": "Tracks the stat upgrades and gacha tickets you collect during each run of PokeSurvivor (pokesurvivor.com).",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage", "scripting"],
+  "background": { "service_worker": "background.js" },
+  "host_permissions": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
+      "js": ["stats.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Horde Run Tracker",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}

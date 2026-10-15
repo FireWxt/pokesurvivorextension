@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Horde Run Tracker</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1><img src="icons/icon32.png" alt=""> Horde Run <span>Tracker</span></h1>
+    <div class="actions">
+      <button id="toggle-overlay"></button>
+      <button id="clear" class="danger">Clear history</button>
+    </div>
+  </header>
+  <section>
+    <h2>Current run</h2>
+    <div id="current"></div>
+  </section>
+  <section>
+    <h2>Previous runs</h2>
+    <div id="history"></div>
+  </section>
+  <script src="stats.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
