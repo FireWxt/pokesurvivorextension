@@ -4,11 +4,15 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const isOpen = (el) => !!el && !el.classList.contains('hidden');
-  const HISTORY_MAX = 30;
+  const { t } = PST;
   const instanceId = Math.random().toString(36).slice(2);
+  const ATTACH_TIMEOUT = 10000;
 
   let state = { current: null, history: [] };
-  let settings = { visible: true, collapsed: false, pos: null, view: 'run' };
+  let settings = { ...PST.DEFAULT_SETTINGS };
+  let shortcut = '';
+  let attached = false;
+  let attachFailed = false;
 
   // ---------- Storage ----------
 
@@ -21,13 +25,21 @@
     chrome.storage.local.set({ [PST.SETTINGS_KEY]: settings });
   }
 
+  function saveStatus() {
+    chrome.storage.local.set({ [PST.STATUS_KEY]: { attached, at: Date.now() } });
+  }
+
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
     const changed = changes[PST.STORAGE_KEY];
     // Only adopt writes made elsewhere (popup, another tab): replaying our own
     // writes could roll the state back when two saves happen close together.
-    if (changed && changed.newValue?.writer !== instanceId) state = changed.newValue || { current: null, history: [] };
+    if (changed && changed.newValue?.writer !== instanceId) {
+      state = changed.newValue || { current: null, history: [] };
+      state.history = state.history || [];
+    }
     if (changes[PST.SETTINGS_KEY]) settings = { ...settings, ...changes[PST.SETTINGS_KEY].newValue };
+    if (changes[PST.SHORTCUT_KEY]) shortcut = changes[PST.SHORTCUT_KEY].newValue || '';
     render();
   });
 
@@ -111,8 +123,7 @@
     const run = state.current;
     if (!run || run.archived || !hasContent(run)) return;
     run.archived = true;
-    state.history.unshift(run);
-    state.history.length = Math.min(state.history.length, HISTORY_MAX);
+    state.history = PST.addToHistory(state.history, run);
   }
 
   // result/tickets come from the end screen; without one (quit, reload) we keep what we tracked.
@@ -132,15 +143,6 @@
 
   function onRunStart() {
     newRun(1);
-    save();
-    render();
-  }
-
-  function onLevelUpOpened() {
-    const level = parseInt($('lvl-num')?.textContent, 10) || 0;
-    const run = state.current;
-    if (!run || run.ended || level < run.lastLevel) newRun(level);
-    state.current.lastLevel = level;
     save();
     render();
   }
@@ -167,55 +169,71 @@
     let title = '';
     for (const n of nm?.childNodes || []) if (n !== chip) title += n.textContent;
     title = title.trim();
-    const desc = (card.querySelector('.ds')?.textContent || '').trim();
-
-    let kind;
-    let stat = null;
-    if (card.classList.contains('evo')) kind = 'evo';
-    else if (/^(nuevo|new)\b/.test(PST.norm(chipText))) kind = 'new';
-    else if (/\d+\s*>\s*\d+/.test(chipText)) kind = 'up';
-    else if ((stat = PST.statIdFromTitle(title))) kind = 'stat';
-    else kind = 'other';
-
-    return { kind, stat, title, tag: chipText, desc };
+    const { kind, stat } = PST.classifyCard({ isEvo: card.classList.contains('evo'), chipText, title });
+    return { kind, stat, title, tag: chipText };
   }
 
   // ---------- Pick detection ----------
-  // Click (mouse / touch) or keys 1-3. A pick is only committed once the game
-  // closes the screen (solo) or marks the cards "done" (co-op).
+  // Click (mouse / touch) or keys 1-3 tell us which card the player chose. The pick is
+  // committed once the game closes the screen (solo) or marks the cards "done" (co-op);
+  // the card the game marks as picked wins over the one we saw being chosen.
 
-  let pending = null;
-  let pendingTimer = 0;
+  let pending = null;  // card the player chose
+  let offer = [];      // cards on screen
+  let handled = true;  // this level-up's pick is recorded (or no level-up is open)
 
   function levelUpAcceptsPick() {
     return isOpen($('scr-levelup')) && !$('cards')?.classList.contains('done');
   }
 
+  function readOffer() {
+    if (!levelUpAcceptsPick()) return;
+    const cards = [...($('cards')?.querySelectorAll('.card') || [])].map(readCard).filter((c) => c.title);
+    if (cards.length) offer = cards;
+  }
+
+  function onLevelUpOpened() {
+    const level = parseInt($('lvl-num')?.textContent, 10) || 0;
+    const run = state.current;
+    if (!run || run.ended || level < run.lastLevel) newRun(level);
+    state.current.lastLevel = level;
+    pending = null;
+    offer = [];
+    handled = false;
+    readOffer();
+    save();
+    render();
+  }
+
   function setPending(index) {
     const card = $('cards')?.querySelectorAll('.card')[index];
     if (!card || !levelUpAcceptsPick()) return;
-    pending = { index, data: readCard(card) };
-    clearTimeout(pendingTimer);
-    pendingTimer = setTimeout(() => (pending = null), 2000);
+    readOffer();
+    pending = readCard(card);
   }
 
   function tryCommit() {
-    if (!pending) return;
+    if (handled) return;
     const cards = $('cards');
     const closed = !isOpen($('scr-levelup')) || cards?.classList.contains('done');
-    if (!closed) return;
+    if (!closed) {
+      readOffer();
+      return;
+    }
     const picked = cards?.querySelector('.card.picked');
-    let data = pending.data;
-    if (picked) data = readCard(picked);
+    const data = picked ? readCard(picked) : pending;
+    if (!data) return;
+    handled = true;
     pending = null;
-    clearTimeout(pendingTimer);
     commit(data);
   }
 
   function commit(data) {
     if (!state.current || state.current.ended) newRun(parseInt($('lvl-num')?.textContent, 10) || 0);
     const run = state.current;
-    run.picks.push({ ...data, level: run.lastLevel, at: Date.now() });
+    const pick = { ...data, level: run.lastLevel, at: Date.now() };
+    if (offer.length) pick.offered = offer.map((c) => c.title);
+    run.picks.push(pick);
     if (data.kind === 'stat') run.counts[data.stat] = (run.counts[data.stat] || 0) + 1;
     save();
     render(data.kind === 'stat' ? data.stat : null);
@@ -231,11 +249,6 @@
     if (e.repeat) return;
     const m = /^(?:Digit|Numpad)([1-3])$/.exec(e.code);
     if (m) setPending(Number(m[1]) - 1);
-    if (e.altKey && e.code === 'KeyT') {
-      settings.visible = !settings.visible;
-      saveSettings();
-      render();
-    }
   }, true);
 
   // ---------- Watching the game DOM ----------
@@ -255,7 +268,7 @@
       tryCommit();
     }).observe(lvl, { attributes: true, attributeFilter: ['class'] });
 
-    new MutationObserver(tryCommit).observe(cards, { attributes: true, attributeFilter: ['class'], subtree: true });
+    new MutationObserver(tryCommit).observe(cards, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
 
     let overWasOpen = isOpen(over);
     new MutationObserver(() => {
@@ -278,6 +291,9 @@
     for (const s of screens) screenObserver.observe(s, { attributes: true, attributeFilter: ['class'] });
 
     setInterval(pollTickets, 1000);
+    attached = true;
+    attachFailed = false;
+    saveStatus();
     return true;
   }
 
@@ -294,7 +310,7 @@
       :host { all: initial; }
       .panel {
         position: fixed; top: 70px; right: 12px; z-index: 2147483000;
-        width: 280px; color: #f4f8ff; font: 13px/1.3 'Pixelify', system-ui, sans-serif;
+        width: 21.5em; color: #f4f8ff; font: 13px/1.3 'Pixelify', system-ui, sans-serif;
         background: rgba(10, 20, 48, .88); border: 2px solid rgba(244, 248, 255, .25);
         border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .45); user-select: none;
       }
@@ -305,14 +321,14 @@
       .title { flex: 1; font-weight: 700; color: #ffd23f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .sub { color: #9fb1c9; font-weight: 400; }
       button {
-        all: unset; cursor: pointer; min-width: 20px; height: 20px; padding: 0 4px; box-sizing: border-box;
-        text-align: center; line-height: 20px; border-radius: 5px; color: #c9d6ea; background: rgba(255, 255, 255, .08);
+        all: unset; cursor: pointer; min-width: 1.55em; height: 1.55em; padding: 0 4px; box-sizing: border-box;
+        text-align: center; line-height: 1.55em; border-radius: 5px; color: #c9d6ea; background: rgba(255, 255, 255, .08);
       }
       button:hover { background: rgba(255, 255, 255, .2); }
       button.on { background: #ffd23f; color: #0a1430; }
       .body { padding: 4px 8px 8px; max-height: 70vh; overflow-y: auto; }
-      .collapsed .body { display: none; }
-      .collapsed .head { border-bottom: 0; }
+      .collapsed .body, .compact .body, .compact .hist { display: none; }
+      .collapsed .head, .compact .head { border-bottom: 0; }
       .tickets { display: flex; gap: 6px; padding: 4px 0 6px; }
       .tk { flex: 1; display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 6px; background: rgba(255, 255, 255, .06); }
       .tk i { width: 14px; height: 10px; border-radius: 2px; flex: none; }
@@ -320,31 +336,41 @@
       .tk.t10 i { background: #c47bff; box-shadow: inset -3px 0 #8a3fd0; }
       .tk b { margin-left: auto; color: #ffd23f; }
       .tk.t10 b { color: #d9a6ff; }
-      .note { color: #9fb1c9; font-size: 10px; padding-bottom: 4px; }
+      .note { color: #9fb1c9; font-size: .77em; padding-bottom: 4px; }
+      .warn { color: #ffb36b; font-size: .85em; padding: 4px 0; }
+      .line { display: flex; justify-content: space-between; gap: 8px; color: #c9d6ea; font-size: .92em; padding: 2px 0; }
+      .line b { color: #f4f8ff; }
+      .goal { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .1); overflow: hidden; margin: 2px 0 4px; }
+      .goal i { display: block; height: 100%; background: #7be08a; }
       .row { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; padding: 3px 0; border-top: 1px solid rgba(244, 248, 255, .07); }
       .name { font-weight: 700; }
       .n { text-align: right; font-weight: 700; color: #ffd23f; }
-      .eff { grid-column: 1 / -1; color: #c9d6ea; font-size: 12px; }
+      .eff { grid-column: 1 / -1; color: #c9d6ea; font-size: .92em; }
       .zero { opacity: .38; }
       .zero .n { color: inherit; }
-      .maxed .n::after { content: ' MAX'; color: #7be08a; font-size: 10px; }
+      .maxed .n::after { content: ' MAX'; color: #7be08a; font-size: .77em; }
       .flash { animation: flash 1.2s ease-out; }
       @keyframes flash { from { background: rgba(255, 210, 63, .35); } to { background: transparent; } }
-      .foot { margin-top: 6px; color: #9fb1c9; font-size: 11px; }
+      .moves { margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(244, 248, 255, .15); }
+      .moves h4 { margin: 0 0 2px; font-size: .85em; color: #9fb1c9; font-weight: 400; text-transform: uppercase; letter-spacing: .05em; }
+      .mv { display: flex; justify-content: space-between; gap: 8px; padding: 1px 0; }
+      .mv b { color: #ffd23f; }
+      .mv b.evo { color: #7be08a; }
+      .foot { margin-top: 6px; color: #9fb1c9; font-size: .85em; }
       .ended { color: #ff9b9b; }
       .hrun { padding: 5px 0; }
       .hrun + .hrun { border-top: 1px solid rgba(244, 248, 255, .1); }
       .hhead { display: flex; justify-content: space-between; gap: 6px; font-weight: 700; }
-      .hmeta { color: #9fb1c9; font-size: 11px; }
-      .hstats { color: #c9d6ea; font-size: 12px; }
+      .hmeta { color: #9fb1c9; font-size: .85em; }
+      .hstats { color: #c9d6ea; font-size: .92em; }
       .empty { color: #9fb1c9; font-style: italic; padding: 6px 0; }
     </style>
     <div class="panel">
       <div class="head">
         <div class="title"></div>
-        <button class="hist" title="Run history">History</button>
-        <button class="collapse" title="Collapse"></button>
-        <button class="close" title="Hide (Alt+T)">×</button>
+        <button class="hist"></button>
+        <button class="collapse"></button>
+        <button class="close">×</button>
       </div>
       <div class="body"><div class="content"></div><div class="foot"></div></div>
     </div>`;
@@ -355,14 +381,19 @@
   const footEl = root.querySelector('.foot');
   const collapseBtn = root.querySelector('.collapse');
   const histBtn = root.querySelector('.hist');
+  const closeBtn = root.querySelector('.close');
+  histBtn.textContent = '☰';
+  histBtn.title = t('runHistory');
+  closeBtn.title = t('hide');
 
   // Keep the game from treating our clicks/touches as game input.
-  for (const t of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel']) {
-    host.addEventListener(t, (e) => e.stopPropagation());
+  for (const type of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel']) {
+    host.addEventListener(type, (e) => e.stopPropagation());
   }
 
   collapseBtn.addEventListener('click', () => {
-    settings.collapsed = !settings.collapsed;
+    if (settings.compact) settings.compact = false;
+    else settings.collapsed = !settings.collapsed;
     saveSettings();
     render();
   });
@@ -372,7 +403,7 @@
     saveSettings();
     render();
   });
-  root.querySelector('.close').addEventListener('click', () => {
+  closeBtn.addEventListener('click', () => {
     settings.visible = false;
     saveSettings();
     render();
@@ -387,9 +418,7 @@
     const dy = e.clientY - r.top;
     head.setPointerCapture(e.pointerId);
     const move = (ev) => {
-      const x = Math.max(0, Math.min(window.innerWidth - r.width, ev.clientX - dx));
-      const y = Math.max(0, Math.min(window.innerHeight - 30, ev.clientY - dy));
-      settings.pos = { x, y };
+      settings.pos = { x: ev.clientX - dx, y: ev.clientY - dy };
       applyPos();
     };
     const up = () => {
@@ -401,79 +430,145 @@
     head.addEventListener('pointerup', up);
   });
 
+  // The saved position is kept as is; it is only clamped for display, so the panel stays
+  // on screen when the window shrinks and goes back to its place when it grows again.
   function applyPos() {
-    if (!settings.pos) return;
-    panel.style.left = `${settings.pos.x}px`;
-    panel.style.top = `${settings.pos.y}px`;
+    if (!settings.pos) {
+      panel.style.left = panel.style.top = panel.style.right = '';
+      return;
+    }
+    const x = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, settings.pos.x));
+    const y = Math.max(0, Math.min(window.innerHeight - 30, settings.pos.y));
+    panel.style.left = `${x}px`;
+    panel.style.top = `${y}px`;
     panel.style.right = 'auto';
   }
+  window.addEventListener('resize', applyPos);
 
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
   function ticketsHtml(run) {
-    const t = run?.tickets || { t1: 0, t10: 0 };
+    const tk = run?.tickets || { t1: 0, t10: 0 };
     const guest = run && !run.ended && !run.ticketBase;
     return `<div class="tickets">
-        <span class="tk t1" title="Gacha tickets"><i></i>Tickets<b>${t.t1}</b></span>
-        <span class="tk t10" title="×10 gacha tickets"><i></i>×10<b>${t.t10}</b></span>
-      </div>${guest ? '<div class="note">Playing as guest: tickets are counted at the end of the run.</div>' : ''}`;
+        <span class="tk t1" title="${esc(t('ticketsTitle'))}"><i></i>${esc(t('tickets'))}<b>${tk.t1}</b></span>
+        <span class="tk t10" title="${esc(t('tickets10Title'))}"><i></i>×10<b>${tk.t10}</b></span>
+      </div>${guest ? `<div class="note">${esc(t('guestNote'))}</div>` : ''}`;
+  }
+
+  function liveText(run) {
+    const rate = PST.ticketRate(run);
+    return t('durationRate', PST.fmtDuration(PST.runDuration(run)), rate == null ? '—' : rate.toFixed(1));
+  }
+
+  function goalHtml() {
+    if (!(settings.goal > 0)) return '';
+    const value = PST.todayValue(state);
+    const ratio = Math.min(1, value / settings.goal);
+    return `<div class="line"><span>${esc(t('goalToday'))}</span><b>${value} / ${settings.goal}</b></div>
+      <div class="goal"><i style="width:${Math.round(ratio * 100)}%"></i></div>`;
+  }
+
+  function movesHtml(run) {
+    const list = PST.moves(run);
+    if (!list.length) return '';
+    return `<div class="moves"><h4>${esc(t('moves'))}</h4>${list.map((m) => `<div class="mv"><span>${esc(m.title)}</span>${
+      m.evo ? `<b class="evo">${esc(t('kind_evo'))}</b>` : `<b>${esc(t('levelShort', m.level))}</b>`}</div>`).join('')}</div>`;
   }
 
   function renderRun(run, flashId) {
     const counts = run?.counts || PST.emptyCounts();
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    titleEl.innerHTML = run
-      ? `Run stats <span class="sub">· Lv ${run.lastLevel} · ${total} stat${total === 1 ? '' : 's'}</span>`
-      : 'Run stats <span class="sub">· waiting</span>';
 
-    contentEl.innerHTML = ticketsHtml(run) + PST.STATS.map((s) => {
-      const n = counts[s.id] || 0;
-      const cls = ['row', n ? '' : 'zero', s.max && n >= s.max ? 'maxed' : '', flashId === s.id ? 'flash' : ''].join(' ');
-      return `<div class="${cls}" title="${esc(s.game)}">
-        <span class="name">${esc(s.label)}</span>
-        <span class="n">${n}${s.max ? `<span class="sub">/${s.max}</span>` : ''}</span>
-        <span class="eff">${n ? esc(s.effect(n)) : '—'}</span>
-      </div>`;
-    }).join('');
+    if (settings.compact) {
+      const tk = run?.tickets || { t1: 0, t10: 0 };
+      titleEl.innerHTML = run
+        ? `${esc(t('levelShort', run.lastLevel))} <span class="sub">· 🎟 ${tk.t1} · ×10 ${tk.t10} · <span class="live">${esc(PST.fmtDuration(PST.runDuration(run)))}</span></span>`
+        : `${esc(t('runStats'))} <span class="sub">· ${esc(t('waiting'))}</span>`;
+      return;
+    }
+
+    titleEl.innerHTML = run
+      ? `${esc(t('levelShort', run.lastLevel))} <span class="sub">· ${esc(t('statCount', total))}${run.partner ? ` · ${esc(run.partner)}` : ''}</span>`
+      : `${esc(t('runStats'))} <span class="sub">· ${esc(t('waiting'))}</span>`;
+
+    const { offense, toughness } = PST.power(counts);
+    contentEl.innerHTML = ticketsHtml(run)
+      + (run ? `<div class="line"><span class="live">${esc(liveText(run))}</span></div>` : '')
+      + goalHtml()
+      + `<div class="line" title="${esc(t('powerTitle'))}"><span>${esc(t('offense'))} <b>×${offense.toFixed(2)}</b></span><span>${esc(t('toughness'))} <b>×${toughness.toFixed(2)}</b></span></div>`
+      + PST.STATS.map((s) => {
+        const n = counts[s.id] || 0;
+        const cls = ['row', n ? '' : 'zero', s.max && n >= s.max ? 'maxed' : '', flashId === s.id ? 'flash' : ''].join(' ');
+        return `<div class="${cls}" title="${esc(s.game)}">
+          <span class="name">${esc(s.label)}</span>
+          <span class="n">${n}${s.max ? `<span class="sub">/${s.max}</span>` : ''}</span>
+          <span class="eff">${n ? esc(s.effect(n)) : '—'}</span>
+        </div>`;
+      }).join('')
+      + movesHtml(run);
 
     const last = run?.picks[run.picks.length - 1];
-    let foot = last ? `Last pick (Lv ${last.level}): ${esc(last.title)} · ${esc(PST.KIND_LABEL[last.kind])}` : 'No card picked yet.';
-    if (run?.ended) foot += `<br><span class="ended">${esc(run.result?.title || 'Run over')}</span>`;
-    footEl.innerHTML = foot + '<br>Alt+T to show / hide';
+    let foot = last ? esc(t('lastPick', last.level, last.title, PST.KIND_LABEL[last.kind])) : esc(t('noPickYet'));
+    if (run?.ended) foot += `<br><span class="ended">${esc(run.result?.title || t('runOver'))}</span>`;
+    footEl.innerHTML = foot + '<br>' + shortcutHint();
+  }
+
+  function shortcutHint() {
+    return esc(shortcut ? t('shortcutHint', shortcut) : t('noShortcutHint'));
   }
 
   function renderHistory() {
     const runs = state.history || [];
-    titleEl.innerHTML = `Run history <span class="sub">· ${runs.length} run${runs.length === 1 ? '' : 's'}</span>`;
+    titleEl.innerHTML = `${esc(t('runHistory'))} <span class="sub">· ${esc(t('runCount', runs.length))}</span>`;
     contentEl.innerHTML = runs.length ? runs.map((run) => {
-      const time = run.result?.rows?.find(([k]) => ['tiempo', 'time'].includes(PST.norm(k)))?.[1];
+      const time = PST.gameTime(run);
       const stats = PST.STATS.filter((s) => run.counts?.[s.id]).map((s) => `${esc(s.label)} ×${run.counts[s.id]}`).join(' · ');
-      const t = run.tickets || { t1: 0, t10: 0 };
+      const tk = run.tickets || { t1: 0, t10: 0 };
       const date = new Date(run.startedAt).toLocaleString(undefined, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      const rate = PST.ticketRate(run);
       return `<div class="hrun">
-        <div class="hhead"><span>${esc(run.partner || 'Run')}</span><span class="hmeta">${date}</span></div>
-        <div class="hmeta">Lv ${run.lastLevel}${time ? ` · ${esc(time)}` : ''} · Tickets ${t.t1} · ×10 ${t.t10}</div>
-        <div class="hstats">${stats || 'No stats picked'}</div>
+        <div class="hhead"><span>${run.pinned ? '📌 ' : ''}${esc(run.partner || t('run'))}</span><span class="hmeta">${date}</span></div>
+        <div class="hmeta">${esc(t('levelShort', run.lastLevel))}${time ? ` · ${esc(time)}` : ''} · ${esc(t('tickets'))} ${tk.t1} · ×10 ${tk.t10}${
+          rate == null ? '' : ` · ${esc(t('perMin', rate.toFixed(1)))}`}</div>
+        <div class="hstats">${stats || esc(t('noStatsPicked'))}</div>
       </div>`;
-    }).join('') : '<div class="empty">No finished runs yet. A run is saved here when it ends.</div>';
-    footEl.innerHTML = 'Full details in the extension popup.<br>Alt+T to show / hide';
+    }).join('') : `<div class="empty">${esc(t('noFinishedRuns'))}</div>`;
+    footEl.innerHTML = esc(t('fullDetails')) + '<br>' + shortcutHint();
   }
 
   function render(flashId) {
     host.style.display = settings.visible ? '' : 'none';
-    panel.classList.toggle('collapsed', settings.collapsed);
-    collapseBtn.textContent = settings.collapsed ? '+' : '–';
+    panel.style.opacity = String(settings.opacity ?? 1);
+    panel.style.fontSize = `${13 * (settings.scale || 1)}px`;
+    panel.classList.toggle('collapsed', settings.collapsed && !settings.compact);
+    panel.classList.toggle('compact', !!settings.compact);
+    collapseBtn.textContent = settings.collapsed || settings.compact ? '+' : '–';
+    collapseBtn.title = settings.collapsed || settings.compact ? t('expand') : t('collapse');
     histBtn.classList.toggle('on', settings.view === 'history');
     applyPos();
-    if (settings.view === 'history') renderHistory();
+    if (attachFailed) {
+      titleEl.textContent = t('extName');
+      contentEl.innerHTML = `<div class="warn">${esc(t('notAttached'))}</div>`;
+      footEl.innerHTML = shortcutHint();
+    } else if (settings.view === 'history' && !settings.compact) renderHistory();
     else renderRun(state.current, flashId);
   }
 
+  // Keep the run duration and ticket rate ticking without redrawing the whole panel.
+  setInterval(() => {
+    const run = state.current;
+    const live = root.querySelector('.live');
+    if (!live || !run || run.ended || !settings.visible) return;
+    live.textContent = settings.compact ? PST.fmtDuration(PST.runDuration(run)) : liveText(run);
+  }, 1000);
+
   // ---------- Startup ----------
 
-  chrome.storage.local.get([PST.STORAGE_KEY, PST.SETTINGS_KEY], (res) => {
+  chrome.storage.local.get([PST.STORAGE_KEY, PST.SETTINGS_KEY, PST.SHORTCUT_KEY], (res) => {
     if (res[PST.STORAGE_KEY]) state = res[PST.STORAGE_KEY];
     if (res[PST.SETTINGS_KEY]) settings = { ...settings, ...res[PST.SETTINGS_KEY] };
+    shortcut = res[PST.SHORTCUT_KEY] || '';
     state.history = state.history || [];
     // A run left unfinished by a page reload can't be resumed by the game: file it away.
     // (Only on a fresh page load, not when re-injected into a page mid-run after an update.)
@@ -481,8 +576,19 @@
     document.documentElement.appendChild(host);
     render();
     if (!watch()) {
-      // The game's HTML is static, but wait in case it isn't there yet.
-      const timer = setInterval(() => watch() && clearInterval(timer), 500);
+      // The game's HTML is static, but wait in case it isn't there yet;
+      // past a few seconds, say so instead of failing silently.
+      const started = Date.now();
+      const timer = setInterval(() => {
+        if (watch()) {
+          clearInterval(timer);
+          render();
+        } else if (!attachFailed && Date.now() - started > ATTACH_TIMEOUT) {
+          attachFailed = true;
+          saveStatus();
+          render();
+        }
+      }, 500);
     }
   });
 })();

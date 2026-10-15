@@ -1,0 +1,326 @@
+{
+  "extName": {
+    "message": "Horde Run Tracker"
+  },
+  "extDesc": {
+    "message": "Suit les améliorations de stats et les tickets gacha récoltés à chaque run de PokeSurvivor (pokesurvivor.com)."
+  },
+  "cmdToggle": {
+    "message": "Afficher / masquer l'overlay"
+  },
+  "stat_atk": {
+    "message": "Dégâts"
+  },
+  "stat_def": {
+    "message": "Armure"
+  },
+  "stat_hp": {
+    "message": "PV max"
+  },
+  "stat_rgn": {
+    "message": "Régén."
+  },
+  "stat_xp": {
+    "message": "XP"
+  },
+  "stat_spd": {
+    "message": "Vitesse"
+  },
+  "stat_cd": {
+    "message": "Recharge"
+  },
+  "stat_mag": {
+    "message": "Aimant"
+  },
+  "stat_heal": {
+    "message": "Soin"
+  },
+  "effAtk": {
+    "message": "+$1 de dégâts"
+  },
+  "effDef": {
+    "message": "-$1% de dégâts subis"
+  },
+  "effHp": {
+    "message": "+$1 PV max"
+  },
+  "effRgn": {
+    "message": "+$1 PV/s"
+  },
+  "effXp": {
+    "message": "+$1 XP"
+  },
+  "effSpd": {
+    "message": "+$1 de vitesse"
+  },
+  "effCd": {
+    "message": "-$1 de recharge"
+  },
+  "effMag": {
+    "message": "+$1 de rayon de ramassage"
+  },
+  "effHeal": {
+    "message": "$1 × 45% des PV rendus"
+  },
+  "kind_stat": {
+    "message": "Stat"
+  },
+  "kind_new": {
+    "message": "Nouvelle attaque"
+  },
+  "kind_up": {
+    "message": "Attaque +"
+  },
+  "kind_evo": {
+    "message": "Évolution"
+  },
+  "kind_other": {
+    "message": "Autre"
+  },
+  "run": {
+    "message": "Run"
+  },
+  "runs": {
+    "message": "Runs"
+  },
+  "runCount": {
+    "message": "Runs : $1"
+  },
+  "runStats": {
+    "message": "Stats de la run"
+  },
+  "runHistory": {
+    "message": "Historique"
+  },
+  "history": {
+    "message": "Historique"
+  },
+  "waiting": {
+    "message": "en attente"
+  },
+  "levelShort": {
+    "message": "Niv. $1"
+  },
+  "statCount": {
+    "message": "Stats : $1"
+  },
+  "tickets": {
+    "message": "Tickets"
+  },
+  "ticketsTitle": {
+    "message": "Tickets gacha"
+  },
+  "tickets10Title": {
+    "message": "Tickets gacha ×10"
+  },
+  "guestNote": {
+    "message": "Partie en invité : les tickets sont comptés à la fin de la run."
+  },
+  "durationRate": {
+    "message": "⏱ $1 · $2 tickets/min"
+  },
+  "duration": {
+    "message": "Durée"
+  },
+  "rate": {
+    "message": "Rendement"
+  },
+  "perMin": {
+    "message": "$1/min"
+  },
+  "offense": {
+    "message": "Attaque"
+  },
+  "toughness": {
+    "message": "Résistance"
+  },
+  "powerTitle": {
+    "message": "Attaque : dégâts × cadence (cartes Dégâts et Recharge). Résistance : diviseur des dégâts subis grâce à l’Armure. Par rapport à une run sans carte de stat."
+  },
+  "moves": {
+    "message": "Attaques"
+  },
+  "lastPick": {
+    "message": "Dernier choix (niv. $1) : $2 · $3"
+  },
+  "noPickYet": {
+    "message": "Aucune carte choisie pour l’instant."
+  },
+  "runOver": {
+    "message": "Run terminée"
+  },
+  "shortcutHint": {
+    "message": "$1 pour afficher / masquer"
+  },
+  "noShortcutHint": {
+    "message": "Aucun raccourci (voir les réglages du popup)"
+  },
+  "noStatsPicked": {
+    "message": "Aucune stat choisie."
+  },
+  "noFinishedRuns": {
+    "message": "Aucune run terminée. Une run est enregistrée ici à sa fin."
+  },
+  "fullDetails": {
+    "message": "Détails complets dans le popup de l’extension."
+  },
+  "hide": {
+    "message": "Masquer"
+  },
+  "collapse": {
+    "message": "Réduire"
+  },
+  "expand": {
+    "message": "Agrandir"
+  },
+  "notAttached": {
+    "message": "Jeu non détecté sur cette page : le suivi est en pause."
+  },
+  "goalToday": {
+    "message": "Objectif du jour"
+  },
+  "goalReachedTitle": {
+    "message": "Objectif du jour atteint !"
+  },
+  "goalReachedMessage": {
+    "message": "$1 / $2 de valeur en tickets récoltée aujourd’hui."
+  },
+  "badgeTitle": {
+    "message": "Horde Run Tracker · Niv. $1 · Tickets $2 · ×10 $3"
+  },
+  "openInTab": {
+    "message": "Ouvrir dans un onglet"
+  },
+  "currentRun": {
+    "message": "Run en cours"
+  },
+  "summary": {
+    "message": "Bilan"
+  },
+  "allPartners": {
+    "message": "Tous les partenaires"
+  },
+  "cardOffers": {
+    "message": "Cartes proposées / choisies"
+  },
+  "card": {
+    "message": "Carte"
+  },
+  "offered": {
+    "message": "Proposée"
+  },
+  "picked": {
+    "message": "Choisie"
+  },
+  "noOfferData": {
+    "message": "Pas encore de données : les cartes proposées sont enregistrées à partir de cette version."
+  },
+  "previousRuns": {
+    "message": "Runs précédentes"
+  },
+  "ticketValue": {
+    "message": "Valeur tickets"
+  },
+  "avgPerRun": {
+    "message": "$1 / run"
+  },
+  "avgLevel": {
+    "message": "Niveau moyen"
+  },
+  "maxLevel": {
+    "message": "max $1"
+  },
+  "avgDuration": {
+    "message": "Durée moyenne"
+  },
+  "bestRun": {
+    "message": "Meilleure run :"
+  },
+  "cardsPicked": {
+    "message": "Cartes choisies : $1"
+  },
+  "levelCurve": {
+    "message": "Niveau au fil du temps"
+  },
+  "noRunInProgress": {
+    "message": "Aucune run en cours. Le suivi démarre quand tu lances une run."
+  },
+  "noRunsYet": {
+    "message": "Aucune run enregistrée."
+  },
+  "pin": {
+    "message": "Épingler (jamais supprimée automatiquement)"
+  },
+  "unpin": {
+    "message": "Désépingler"
+  },
+  "deleteRun": {
+    "message": "Supprimer cette run"
+  },
+  "confirmDeleteRun": {
+    "message": "Supprimer cette run ?"
+  },
+  "confirmClear": {
+    "message": "Effacer toutes les runs non épinglées ?"
+  },
+  "showOverlay": {
+    "message": "Afficher l’overlay"
+  },
+  "hideOverlay": {
+    "message": "Masquer l’overlay"
+  },
+  "settings": {
+    "message": "Réglages et données"
+  },
+  "dailyGoal": {
+    "message": "Objectif quotidien"
+  },
+  "dailyGoalTitle": {
+    "message": "Valeur en tickets à récolter chaque jour (un ticket ×10 compte pour 10). 0 = désactivé."
+  },
+  "opacity": {
+    "message": "Opacité de l’overlay"
+  },
+  "size": {
+    "message": "Taille de l’overlay"
+  },
+  "sizeSmall": {
+    "message": "Petite"
+  },
+  "sizeMedium": {
+    "message": "Moyenne"
+  },
+  "sizeLarge": {
+    "message": "Grande"
+  },
+  "compactMode": {
+    "message": "Mode compact"
+  },
+  "shortcut": {
+    "message": "Raccourci"
+  },
+  "none": {
+    "message": "aucun"
+  },
+  "change": {
+    "message": "Modifier"
+  },
+  "exportJson": {
+    "message": "Exporter JSON"
+  },
+  "exportCsv": {
+    "message": "Exporter CSV"
+  },
+  "import": {
+    "message": "Importer…"
+  },
+  "clearHistory": {
+    "message": "Effacer l’historique"
+  },
+  "importInvalid": {
+    "message": "Ce fichier n’est pas un export de Horde Run Tracker."
+  },
+  "importDone": {
+    "message": "$1 runs importées, $2 déjà présentes."
+  }
+}

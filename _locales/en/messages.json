@@ -1,0 +1,326 @@
+{
+  "extName": {
+    "message": "Horde Run Tracker"
+  },
+  "extDesc": {
+    "message": "Tracks the stat upgrades and gacha tickets you collect during each run of PokeSurvivor (pokesurvivor.com)."
+  },
+  "cmdToggle": {
+    "message": "Show / hide the overlay"
+  },
+  "stat_atk": {
+    "message": "Damage"
+  },
+  "stat_def": {
+    "message": "Armor"
+  },
+  "stat_hp": {
+    "message": "Max HP"
+  },
+  "stat_rgn": {
+    "message": "Regen"
+  },
+  "stat_xp": {
+    "message": "XP"
+  },
+  "stat_spd": {
+    "message": "Speed"
+  },
+  "stat_cd": {
+    "message": "Cooldown"
+  },
+  "stat_mag": {
+    "message": "Magnet"
+  },
+  "stat_heal": {
+    "message": "Heal"
+  },
+  "effAtk": {
+    "message": "+$1 damage"
+  },
+  "effDef": {
+    "message": "-$1% damage taken"
+  },
+  "effHp": {
+    "message": "+$1 max HP"
+  },
+  "effRgn": {
+    "message": "+$1 HP/s"
+  },
+  "effXp": {
+    "message": "+$1 XP"
+  },
+  "effSpd": {
+    "message": "+$1 move speed"
+  },
+  "effCd": {
+    "message": "-$1 cooldown"
+  },
+  "effMag": {
+    "message": "+$1 pickup radius"
+  },
+  "effHeal": {
+    "message": "$1 × 45% HP restored"
+  },
+  "kind_stat": {
+    "message": "Stat"
+  },
+  "kind_new": {
+    "message": "New move"
+  },
+  "kind_up": {
+    "message": "Move +"
+  },
+  "kind_evo": {
+    "message": "Evolution"
+  },
+  "kind_other": {
+    "message": "Other"
+  },
+  "run": {
+    "message": "Run"
+  },
+  "runs": {
+    "message": "Runs"
+  },
+  "runCount": {
+    "message": "Runs: $1"
+  },
+  "runStats": {
+    "message": "Run stats"
+  },
+  "runHistory": {
+    "message": "Run history"
+  },
+  "history": {
+    "message": "History"
+  },
+  "waiting": {
+    "message": "waiting"
+  },
+  "levelShort": {
+    "message": "Lv $1"
+  },
+  "statCount": {
+    "message": "Stats: $1"
+  },
+  "tickets": {
+    "message": "Tickets"
+  },
+  "ticketsTitle": {
+    "message": "Gacha tickets"
+  },
+  "tickets10Title": {
+    "message": "×10 gacha tickets"
+  },
+  "guestNote": {
+    "message": "Playing as guest: tickets are counted at the end of the run."
+  },
+  "durationRate": {
+    "message": "⏱ $1 · $2 tickets/min"
+  },
+  "duration": {
+    "message": "Duration"
+  },
+  "rate": {
+    "message": "Rate"
+  },
+  "perMin": {
+    "message": "$1/min"
+  },
+  "offense": {
+    "message": "Offense"
+  },
+  "toughness": {
+    "message": "Toughness"
+  },
+  "powerTitle": {
+    "message": "Offense: damage × attack rate (Damage and Cooldown cards). Toughness: damage-taken divisor from Armor. Both relative to no stat cards."
+  },
+  "moves": {
+    "message": "Moves"
+  },
+  "lastPick": {
+    "message": "Last pick (Lv $1): $2 · $3"
+  },
+  "noPickYet": {
+    "message": "No card picked yet."
+  },
+  "runOver": {
+    "message": "Run over"
+  },
+  "shortcutHint": {
+    "message": "$1 to show / hide"
+  },
+  "noShortcutHint": {
+    "message": "No shortcut set (see the popup settings)"
+  },
+  "noStatsPicked": {
+    "message": "No stats picked."
+  },
+  "noFinishedRuns": {
+    "message": "No finished runs yet. A run is saved here when it ends."
+  },
+  "fullDetails": {
+    "message": "Full details in the extension popup."
+  },
+  "hide": {
+    "message": "Hide"
+  },
+  "collapse": {
+    "message": "Collapse"
+  },
+  "expand": {
+    "message": "Expand"
+  },
+  "notAttached": {
+    "message": "Game not detected on this page: tracking is paused."
+  },
+  "goalToday": {
+    "message": "Today’s goal"
+  },
+  "goalReachedTitle": {
+    "message": "Daily goal reached!"
+  },
+  "goalReachedMessage": {
+    "message": "$1 / $2 ticket value collected today."
+  },
+  "badgeTitle": {
+    "message": "Horde Run Tracker · Lv $1 · Tickets $2 · ×10 $3"
+  },
+  "openInTab": {
+    "message": "Open in a tab"
+  },
+  "currentRun": {
+    "message": "Current run"
+  },
+  "summary": {
+    "message": "Summary"
+  },
+  "allPartners": {
+    "message": "All partners"
+  },
+  "cardOffers": {
+    "message": "Cards offered vs picked"
+  },
+  "card": {
+    "message": "Card"
+  },
+  "offered": {
+    "message": "Offered"
+  },
+  "picked": {
+    "message": "Picked"
+  },
+  "noOfferData": {
+    "message": "No data yet: offers are recorded from this version on."
+  },
+  "previousRuns": {
+    "message": "Previous runs"
+  },
+  "ticketValue": {
+    "message": "Ticket value"
+  },
+  "avgPerRun": {
+    "message": "$1 / run"
+  },
+  "avgLevel": {
+    "message": "Avg level"
+  },
+  "maxLevel": {
+    "message": "max $1"
+  },
+  "avgDuration": {
+    "message": "Avg duration"
+  },
+  "bestRun": {
+    "message": "Best run:"
+  },
+  "cardsPicked": {
+    "message": "Cards picked: $1"
+  },
+  "levelCurve": {
+    "message": "Level over time"
+  },
+  "noRunInProgress": {
+    "message": "No run in progress. Tracking starts when you enter a run."
+  },
+  "noRunsYet": {
+    "message": "No runs recorded yet."
+  },
+  "pin": {
+    "message": "Pin (never removed automatically)"
+  },
+  "unpin": {
+    "message": "Unpin"
+  },
+  "deleteRun": {
+    "message": "Delete this run"
+  },
+  "confirmDeleteRun": {
+    "message": "Delete this run?"
+  },
+  "confirmClear": {
+    "message": "Clear all unpinned runs?"
+  },
+  "showOverlay": {
+    "message": "Show overlay"
+  },
+  "hideOverlay": {
+    "message": "Hide overlay"
+  },
+  "settings": {
+    "message": "Settings and data"
+  },
+  "dailyGoal": {
+    "message": "Daily goal"
+  },
+  "dailyGoalTitle": {
+    "message": "Ticket value to collect each day (a ×10 ticket counts as 10). 0 = off."
+  },
+  "opacity": {
+    "message": "Overlay opacity"
+  },
+  "size": {
+    "message": "Overlay size"
+  },
+  "sizeSmall": {
+    "message": "Small"
+  },
+  "sizeMedium": {
+    "message": "Medium"
+  },
+  "sizeLarge": {
+    "message": "Large"
+  },
+  "compactMode": {
+    "message": "Compact mode"
+  },
+  "shortcut": {
+    "message": "Shortcut"
+  },
+  "none": {
+    "message": "none"
+  },
+  "change": {
+    "message": "Change"
+  },
+  "exportJson": {
+    "message": "Export JSON"
+  },
+  "exportCsv": {
+    "message": "Export CSV"
+  },
+  "import": {
+    "message": "Import…"
+  },
+  "clearHistory": {
+    "message": "Clear history"
+  },
+  "importInvalid": {
+    "message": "This file is not a Horde Run Tracker export."
+  },
+  "importDone": {
+    "message": "$1 runs imported, $2 already present."
+  }
+}

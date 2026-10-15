@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <title>Horde Run Tracker</title>
@@ -10,17 +10,71 @@
     <h1><img src="icons/icon32.png" alt=""> Horde Run <span>Tracker</span></h1>
     <div class="actions">
       <button id="toggle-overlay"></button>
-      <button id="clear" class="danger">Clear history</button>
+      <button id="open-tab" data-i18n-title="openInTab">⤢</button>
     </div>
   </header>
+
+  <div id="status" class="warn" hidden></div>
+
+  <section id="goal-sec" hidden>
+    <h2 data-i18n="goalToday"></h2>
+    <div id="goal"></div>
+  </section>
+
   <section>
-    <h2>Current run</h2>
+    <h2 data-i18n="currentRun"></h2>
     <div id="current"></div>
   </section>
+
   <section>
-    <h2>Previous runs</h2>
+    <div class="sec-head">
+      <h2 data-i18n="summary"></h2>
+      <select id="partner"></select>
+    </div>
+    <div id="summary"></div>
+    <details id="cards-sec">
+      <summary data-i18n="cardOffers"></summary>
+      <div id="card-stats"></div>
+    </details>
+  </section>
+
+  <section>
+    <h2 data-i18n="previousRuns"></h2>
     <div id="history"></div>
   </section>
+
+  <details class="settings">
+    <summary data-i18n="settings"></summary>
+    <div class="form">
+      <label for="goal-input" data-i18n="dailyGoal"></label>
+      <input id="goal-input" type="number" min="0" step="10" data-i18n-title="dailyGoalTitle">
+
+      <label for="opacity" data-i18n="opacity"></label>
+      <input id="opacity" type="range" min="0.3" max="1" step="0.05">
+
+      <label for="scale" data-i18n="size"></label>
+      <select id="scale">
+        <option value="0.85" data-i18n="sizeSmall"></option>
+        <option value="1" data-i18n="sizeMedium"></option>
+        <option value="1.2" data-i18n="sizeLarge"></option>
+      </select>
+
+      <label for="compact" data-i18n="compactMode"></label>
+      <input id="compact" type="checkbox">
+
+      <span data-i18n="shortcut"></span>
+      <span><b id="shortcut"></b> <button id="change-shortcut" data-i18n="change"></button></span>
+    </div>
+    <div class="data-actions">
+      <button id="export-json" data-i18n="exportJson"></button>
+      <button id="export-csv" data-i18n="exportCsv"></button>
+      <button id="import" data-i18n="import"></button>
+      <button id="clear" class="danger" data-i18n="clearHistory"></button>
+      <input id="import-file" type="file" accept=".json,application/json" hidden>
+    </div>
+    <div id="import-msg" class="muted"></div>
+  </details>
+
   <script src="stats.js"></script>
   <script src="popup.js"></script>
 </body>

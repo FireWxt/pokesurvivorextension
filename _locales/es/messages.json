@@ -1,0 +1,326 @@
+{
+  "extName": {
+    "message": "Horde Run Tracker"
+  },
+  "extDesc": {
+    "message": "Registra las mejoras de estadísticas y los tickets gacha que consigues en cada partida de PokeSurvivor (pokesurvivor.com)."
+  },
+  "cmdToggle": {
+    "message": "Mostrar / ocultar el panel"
+  },
+  "stat_atk": {
+    "message": "Daño"
+  },
+  "stat_def": {
+    "message": "Coraza"
+  },
+  "stat_hp": {
+    "message": "PS máx."
+  },
+  "stat_rgn": {
+    "message": "Regen."
+  },
+  "stat_xp": {
+    "message": "XP"
+  },
+  "stat_spd": {
+    "message": "Velocidad"
+  },
+  "stat_cd": {
+    "message": "Recarga"
+  },
+  "stat_mag": {
+    "message": "Imán"
+  },
+  "stat_heal": {
+    "message": "Curación"
+  },
+  "effAtk": {
+    "message": "+$1 de daño"
+  },
+  "effDef": {
+    "message": "-$1% de daño recibido"
+  },
+  "effHp": {
+    "message": "+$1 PS máx."
+  },
+  "effRgn": {
+    "message": "+$1 PS/s"
+  },
+  "effXp": {
+    "message": "+$1 XP"
+  },
+  "effSpd": {
+    "message": "+$1 de velocidad"
+  },
+  "effCd": {
+    "message": "-$1 de recarga"
+  },
+  "effMag": {
+    "message": "+$1 de radio de recogida"
+  },
+  "effHeal": {
+    "message": "$1 × 45% de PS restaurados"
+  },
+  "kind_stat": {
+    "message": "Estadística"
+  },
+  "kind_new": {
+    "message": "Nuevo movimiento"
+  },
+  "kind_up": {
+    "message": "Movimiento +"
+  },
+  "kind_evo": {
+    "message": "Evolución"
+  },
+  "kind_other": {
+    "message": "Otro"
+  },
+  "run": {
+    "message": "Partida"
+  },
+  "runs": {
+    "message": "Partidas"
+  },
+  "runCount": {
+    "message": "Partidas: $1"
+  },
+  "runStats": {
+    "message": "Estadísticas"
+  },
+  "runHistory": {
+    "message": "Historial"
+  },
+  "history": {
+    "message": "Historial"
+  },
+  "waiting": {
+    "message": "esperando"
+  },
+  "levelShort": {
+    "message": "Nv. $1"
+  },
+  "statCount": {
+    "message": "Estadísticas: $1"
+  },
+  "tickets": {
+    "message": "Tickets"
+  },
+  "ticketsTitle": {
+    "message": "Tickets gacha"
+  },
+  "tickets10Title": {
+    "message": "Tickets gacha ×10"
+  },
+  "guestNote": {
+    "message": "Jugando como invitado: los tickets se cuentan al final de la partida."
+  },
+  "durationRate": {
+    "message": "⏱ $1 · $2 tickets/min"
+  },
+  "duration": {
+    "message": "Duración"
+  },
+  "rate": {
+    "message": "Rendimiento"
+  },
+  "perMin": {
+    "message": "$1/min"
+  },
+  "offense": {
+    "message": "Ataque"
+  },
+  "toughness": {
+    "message": "Aguante"
+  },
+  "powerTitle": {
+    "message": "Ataque: daño × cadencia (cartas Potencia y Reflejos). Aguante: divisor del daño recibido por la Coraza. Relativo a no tener cartas de estadística."
+  },
+  "moves": {
+    "message": "Movimientos"
+  },
+  "lastPick": {
+    "message": "Última elección (nv. $1): $2 · $3"
+  },
+  "noPickYet": {
+    "message": "Aún no se ha elegido ninguna carta."
+  },
+  "runOver": {
+    "message": "Partida terminada"
+  },
+  "shortcutHint": {
+    "message": "$1 para mostrar / ocultar"
+  },
+  "noShortcutHint": {
+    "message": "Sin atajo (ver los ajustes del popup)"
+  },
+  "noStatsPicked": {
+    "message": "Ninguna estadística elegida."
+  },
+  "noFinishedRuns": {
+    "message": "Aún no hay partidas terminadas. Una partida se guarda aquí al acabar."
+  },
+  "fullDetails": {
+    "message": "Detalles completos en el popup de la extensión."
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "collapse": {
+    "message": "Contraer"
+  },
+  "expand": {
+    "message": "Expandir"
+  },
+  "notAttached": {
+    "message": "Juego no detectado en esta página: el seguimiento está en pausa."
+  },
+  "goalToday": {
+    "message": "Objetivo de hoy"
+  },
+  "goalReachedTitle": {
+    "message": "¡Objetivo diario alcanzado!"
+  },
+  "goalReachedMessage": {
+    "message": "$1 / $2 de valor en tickets conseguido hoy."
+  },
+  "badgeTitle": {
+    "message": "Horde Run Tracker · Nv. $1 · Tickets $2 · ×10 $3"
+  },
+  "openInTab": {
+    "message": "Abrir en una pestaña"
+  },
+  "currentRun": {
+    "message": "Partida actual"
+  },
+  "summary": {
+    "message": "Resumen"
+  },
+  "allPartners": {
+    "message": "Todos los compañeros"
+  },
+  "cardOffers": {
+    "message": "Cartas ofrecidas / elegidas"
+  },
+  "card": {
+    "message": "Carta"
+  },
+  "offered": {
+    "message": "Ofrecida"
+  },
+  "picked": {
+    "message": "Elegida"
+  },
+  "noOfferData": {
+    "message": "Aún no hay datos: las cartas ofrecidas se registran desde esta versión."
+  },
+  "previousRuns": {
+    "message": "Partidas anteriores"
+  },
+  "ticketValue": {
+    "message": "Valor en tickets"
+  },
+  "avgPerRun": {
+    "message": "$1 / partida"
+  },
+  "avgLevel": {
+    "message": "Nivel medio"
+  },
+  "maxLevel": {
+    "message": "máx. $1"
+  },
+  "avgDuration": {
+    "message": "Duración media"
+  },
+  "bestRun": {
+    "message": "Mejor partida:"
+  },
+  "cardsPicked": {
+    "message": "Cartas elegidas: $1"
+  },
+  "levelCurve": {
+    "message": "Nivel a lo largo del tiempo"
+  },
+  "noRunInProgress": {
+    "message": "Ninguna partida en curso. El seguimiento empieza al entrar en una partida."
+  },
+  "noRunsYet": {
+    "message": "Aún no hay partidas registradas."
+  },
+  "pin": {
+    "message": "Fijar (nunca se borra automáticamente)"
+  },
+  "unpin": {
+    "message": "Desfijar"
+  },
+  "deleteRun": {
+    "message": "Borrar esta partida"
+  },
+  "confirmDeleteRun": {
+    "message": "¿Borrar esta partida?"
+  },
+  "confirmClear": {
+    "message": "¿Borrar todas las partidas no fijadas?"
+  },
+  "showOverlay": {
+    "message": "Mostrar panel"
+  },
+  "hideOverlay": {
+    "message": "Ocultar panel"
+  },
+  "settings": {
+    "message": "Ajustes y datos"
+  },
+  "dailyGoal": {
+    "message": "Objetivo diario"
+  },
+  "dailyGoalTitle": {
+    "message": "Valor en tickets a conseguir cada día (un ticket ×10 cuenta como 10). 0 = desactivado."
+  },
+  "opacity": {
+    "message": "Opacidad del panel"
+  },
+  "size": {
+    "message": "Tamaño del panel"
+  },
+  "sizeSmall": {
+    "message": "Pequeño"
+  },
+  "sizeMedium": {
+    "message": "Mediano"
+  },
+  "sizeLarge": {
+    "message": "Grande"
+  },
+  "compactMode": {
+    "message": "Modo compacto"
+  },
+  "shortcut": {
+    "message": "Atajo"
+  },
+  "none": {
+    "message": "ninguno"
+  },
+  "change": {
+    "message": "Cambiar"
+  },
+  "exportJson": {
+    "message": "Exportar JSON"
+  },
+  "exportCsv": {
+    "message": "Exportar CSV"
+  },
+  "import": {
+    "message": "Importar…"
+  },
+  "clearHistory": {
+    "message": "Borrar historial"
+  },
+  "importInvalid": {
+    "message": "Este archivo no es una exportación de Horde Run Tracker."
+  },
+  "importDone": {
+    "message": "$1 partidas importadas, $2 ya existentes."
+  }
+}
